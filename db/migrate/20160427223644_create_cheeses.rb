@@ -6,6 +6,8 @@ class CreateCheeses < ActiveRecord::Migration
       t.string :milk_type, null: false
       t.string :country_of_origin, null: false
 
+      t.references :board, index: true, foreign_key: true, null: false
+
       t.timestamps null: false
     end
   end
