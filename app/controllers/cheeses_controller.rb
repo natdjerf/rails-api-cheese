@@ -54,6 +54,6 @@ class CheesesController < ApplicationController
     end
 
     def cheese_params
-      params[:cheese]
+      params.require(:cheese).permit(:family, :name, :milk_type, :country_of_origin, :flavor)
     end
 end

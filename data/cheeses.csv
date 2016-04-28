@@ -1,0 +1,21 @@
+family,name,milk_type,country_of_origin,flavor
+hard,asiago,cow,Italy,full-flavored mild milky sharp
+hard,pecorino romano,sheep,Italy,salty sharp smokey  spicy
+hard,manchego,sheep,Spain,fruity nutty sweet tangy
+hard,gruyere,cow,Switzerland,nutty rich sweet full-bodied
+hard,parmesan,cow,Italy,fruity nutty savory sharp
+semi-hard,maytag blue,cow,US,lemony savory tangy
+semi-hard,colby,cow,US,sweet
+semi-hard,cheddar,cow,England,creamy sharp
+semi-hard,gouda,cow,Netherlands,creamy full-flavored nutty sweet
+semi-hard,provolone,cow,Italy,buttery mild sharp spicy sweet tangy
+semi-soft,fontina,cow,Italy,mild nutty strong sweet tangy
+semi-soft,feta,cow,Greece,full-flavored salty tangy
+semi-soft,havarti,cow,US,buttery creamy
+semi-soft,mozzarella,cow,Italy,milky
+semi-soft,taleggio,cow,Italy,fruity mild tangy
+soft,brie,cow,France,fruity mild nutty tangy
+soft,gorgonzola,cow,Italy,mild sharp
+soft,ricotta salata,sheep,Italy,salty
+soft,mozzarella di Bufala,buffalo,Italy,floral mild milky sour
+soft,boursin,cow,France,buttery full-flavored herbaceous smooth

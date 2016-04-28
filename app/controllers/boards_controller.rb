@@ -54,6 +54,6 @@ class BoardsController < ApplicationController
     end
 
     def board_params
-      params.require(:board).permit(:name)
+      params.require(:board).permit(:name, :user_id)
     end
 end

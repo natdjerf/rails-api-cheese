@@ -1,3 +1,4 @@
+require 'csv'
 # This file should contain all the record creation needed to experiment with
 # your app during development.
 #
@@ -16,3 +17,12 @@
 #                password: 'abc123',
 #                password_confirmation: nil)
 # end
+desc 'Fill the cheeses table with example data'
+Cheese.transaction do
+  CSV.foreach(Rails.root + 'data/cheeses.csv',
+              headers: true) do |cheese_row|
+    cheese = cheese_row.to_hash
+    next if Cheese.exists? cheese
+    Cheese.create!(cheese)
+  end
+end

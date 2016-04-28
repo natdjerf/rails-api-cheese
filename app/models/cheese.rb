@@ -1,3 +1,5 @@
+# Available cheeses
 class Cheese < ActiveRecord::Base
-  belongs_to :board, inverse_of: :cheeses
+  has_many :cheese_additions
+  has_many :boards, through: :cheese_additions
 end

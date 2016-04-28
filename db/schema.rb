@@ -11,16 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160427223644) do
+ActiveRecord::Schema.define(version: 20160428203417) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "boards", force: :cascade do |t|
-    t.string   "cheese1",    null: false
-    t.string   "cheese2",    null: false
-    t.string   "cheese3",    null: false
-    t.string   "cheese4",    null: false
+    t.string   "name",       null: false
     t.integer  "user_id",    null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -28,11 +25,22 @@ ActiveRecord::Schema.define(version: 20160427223644) do
 
   add_index "boards", ["user_id"], name: "index_boards_on_user_id", using: :btree
 
+  create_table "cheese_additions", force: :cascade do |t|
+    t.integer  "board_id",   null: false
+    t.integer  "cheese_id",  null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "cheese_additions", ["board_id"], name: "index_cheese_additions_on_board_id", using: :btree
+  add_index "cheese_additions", ["cheese_id"], name: "index_cheese_additions_on_cheese_id", using: :btree
+
   create_table "cheeses", force: :cascade do |t|
-    t.string   "type",              null: false
+    t.string   "family",            null: false
     t.string   "name",              null: false
     t.string   "milk_type",         null: false
     t.string   "country_of_origin", null: false
+    t.string   "flavor",            null: false
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
   end
@@ -58,5 +66,7 @@ ActiveRecord::Schema.define(version: 20160427223644) do
   add_index "users", ["token"], name: "index_users_on_token", unique: true, using: :btree
 
   add_foreign_key "boards", "users"
+  add_foreign_key "cheese_additions", "boards"
+  add_foreign_key "cheese_additions", "cheeses"
   add_foreign_key "examples", "users"
 end
