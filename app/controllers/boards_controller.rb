@@ -1,4 +1,5 @@
-class BoardsController < ApplicationController
+# Protected Controller to index only current user's boards
+class BoardsController < ProtectedController
   before_action :set_board, only: [:show, :update, :destroy]
 
   # GET /boards
@@ -6,7 +7,8 @@ class BoardsController < ApplicationController
   def index
     @boards = Board.all
 
-    render json: @boards
+    # render json: @boards
+    render json: base_query
   end
 
   # GET /boards/1
@@ -49,11 +51,15 @@ class BoardsController < ApplicationController
 
   private
 
-    def set_board
-      @board = Board.find(params[:id])
-    end
+  def set_board
+    @board = Board.find(params[:id])
+  end
 
-    def board_params
-      params.require(:board).permit(:name, :user_id)
-    end
+  def board_params
+    params.require(:board).permit(:name, :user_id)
+  end
+
+  def base_query
+    Board.where('user_id = :user', user: current_user.id)
+  end
 end

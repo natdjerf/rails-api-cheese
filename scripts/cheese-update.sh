@@ -1,4 +1,6 @@
 #!/bin/bash
+# Will not be allowing users to add cheeses - testing only
+
 curl --include --request PATCH http://localhost:3000/cheeses/$ID \
   --header "Authorization: Token token=$TOKEN" \
   --header "Content-Type: application/json" \
