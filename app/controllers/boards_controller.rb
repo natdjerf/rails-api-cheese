@@ -52,7 +52,7 @@ class BoardsController < ProtectedController
   private
 
   def set_board
-    @board = Board.find(params[:id])
+    @board = Board.find(params[:id]).cheeses
   end
 
   def board_params
