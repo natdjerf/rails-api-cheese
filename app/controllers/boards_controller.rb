@@ -35,7 +35,7 @@ class BoardsController < ProtectedController
     @board = Board.find(params[:id])
 
     if @board.update(board_params)
-      head :no_content
+      render json: @board
     else
       render json: @board.errors, status: :unprocessable_entity
     end
