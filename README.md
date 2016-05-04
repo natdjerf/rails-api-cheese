@@ -1,83 +1,80 @@
 [![General Assembly Logo](https://camo.githubusercontent.com/1a91b05b8f4d44b5bbfb83abac2b0996d8e26c92/687474703a2f2f692e696d6775722e636f6d2f6b6538555354712e706e67)](https://generalassemb.ly/education/web-development-immersive)
 
-# rails-api-template
-
-A template for starting projects with `rails-api`. Includes authentication.
-
-At the beginning of each cohort, update the versions in [`Gemfile`](Gemfile).
-
-## Dependencies
-
-Install with `bundle install`.
-
--   [`rails-api`](https://github.com/rails-api/rails-api)
--   [`rails`](https://github.com/rails/rails)
--   [`active_model_serializers`](https://github.com/rails-api/active_model_serializers)
--   [`ruby`](https://www.ruby-lang.org/en/)
--   [`postgres`](http://www.postgresql.org)
-
-Until Rails 5 is released, this template should follow the most recent released
-version of Rails 4, as well as track `master` branches for `rails-api` and
-`active_model_serializers`.
-
-## Installation
-
-1.  [Download](../../archive/master.zip) this template.
-1.  Unzip and rename the template directory.
-1.  Empty [`README.md`](README.md) and fill with your own content.
-1.  Move into the new project and `git init`.
-1.  Install dependencies with `bundle install`.
-1.  Rename your app module in `config/application.rb` (change
-    `RailsApiTemplate`).
-1.  Rename your project database in `config/database.yml` (change
-    `'rails-api-template'`).
-1.  Make new `development` and `test` secrets for `config/secrets.yml`. Add and
-    commit this file.
-1.  Setup your database with `bin/rake db:nuke_pave` or `bundle exec rake
-    db:nuke_pave`.
-1.  Run the API server with `bin/rails server` or `bundle exec rails server`.
 
 ## Structure
 
-This template follows the standard project structure in Rails 4.
+All actions are implemented by the user. In order to add a cheese to a board, a POST request is made to the cheese addition table with the associated board and selected cheese id parameters.
 
-`curl` command scripts are stored in [`scripts`](scripts) with names that
-correspond to API actions.
+Models:
 
-User authentication is built-in.
+```ruby
+class User < ActiveRecord::Base
+  include Authentication
+  has_many :boards
+end
+```
 
-## Tasks
+Boards table
+-required parameter: name
 
-Developers should run these often!
+```ruby
+class Board < ActiveRecord::Base
+  belongs_to :user, inverse_of: :boards
+  has_many :cheese_additions
+  has_many :cheeses, through: :cheese_additions
+end
+```
 
--   `rake routes` lists the endpoints available in your API.
--   `rake test` runs automated tests.
--   `rails console` opens a REPL that pre-loads the API.
--   `rails db` opens your database client and loads the correct database.
--   `rails server` starts the API.
--   `scripts/*.sh` run various `curl` commands to test the API. See below.
+Cheese table
+-loaded via csv
 
-<!-- TODO -   `rake nag` checks your code style. -->
-<!-- TODO -   `rake lint` checks your code for syntax errors. -->
+```ruby
+class Cheese < ActiveRecord::Base
+  has_many :cheese_additions
+  has_many :boards, through: :cheese_additions
+end
+```
+
+Cheese Addition table
+-required parameters: board_id, cheese_id
+-join table of cheese and board
+
+```ruby
+class CheeseAddition < ActiveRecord::Base
+  belongs_to :board, inverse_of: :cheese_additions
+  belongs_to :cheese, inverse_of: :cheese_additions
+end
+```
 
 ## API
 
-Use this as the basis for your own API documentation. Add a new third-level
-heading for your custom entities, and follow the pattern provided for the
-built-in user authentication documentation.
 
-Scripts are included in [`scripts`](scripts) to test built-in actions. Add your
-own scripts to test your custom API. As an alternative, you can write automated
-tests in RSpec to test your API.
 
 ### Authentication
 
-| Verb   | URI Pattern            | Controller#Action |
-|--------|------------------------|-------------------|
-| POST   | `/sign-up`             | `users#signup`    |
-| POST   | `/sign-in`             | `users#signin`    |
-| PATCH  | `/change-password/:id` | `users#changepw`  |
-| DELETE | `/sign-out/:id`        | `users#signout`   |
+| Verb   | URI Pattern              | Controller#Action        |
+|--------|--------------------------|--------------------------|
+| POST   | `/sign-up`               | `users#signup`           |
+| POST   | `/sign-in`               | `users#signin`           |
+| PATCH  | `/change-password/:id`   | `users#changepw`         |
+| DELETE | `/sign-out/:id`          | `users#signout`          |
+| GET    | `/cheese_additions`      | `cheese_additions#index` |
+| POST   | `/cheese_additions `     | `cheese_additions#create`|
+| GET    | `/cheese_additions/:id`  | `cheese_additions#show`  |
+| PATCH  | `/cheese_additions/:id ` | `cheese_additions#update`|
+| PUT    | `/cheese_additions/:id`  |`cheese_additions#update` |
+| DELETE | `/cheese_additions/:id`  |`cheese_additions#destroy`|
+| GET    | `/cheeses`               | `cheeses#index`          |
+| POST   | ` /cheeses`              | `cheeses#create`         |
+| GET    | `/cheeses/:id`           | `cheeses#show`           |
+| GET    | `/boards`                | `boards#index`           |
+| POST   | `/boards`                | `boards#create`          |
+| GET    | `/boards/:id`            | `boards#show`            |
+| PATCH  | `/boards/:id`            | `boards#update`          |
+| PUT    | `/boards/:id`            | `boards#update`          |
+| DELETE | `/boards/:id`            | `boards#destroy`         |
+
+
 
 #### POST /sign-up
 
@@ -258,6 +255,131 @@ Content-Type: application/json; charset=utf-8
   }
 }
 ```
+
+
+#### POST /boards
+
+Request:
+
+```sh
+
+curl "http://localhost:3000/boards/$ID" \
+  --include \
+  --request POST \
+  --header "Authorization: Token token=$TOKEN" \
+  --header "Content-Type: application/json" \
+  --data "{
+      \"board\" : {
+          \"name\" : \"$NAME\",
+          \"user_id\" : \"$USER_ID\"
+        }
+  }"
+```
+
+```sh
+scripts/boards-create.sh
+```
+
+
+#### PATCH /boards/id
+
+Request:
+
+```sh
+curl "http://localhost:3000/boards/$ID" \
+  --include \
+  --request PATCH \
+  --header "Authorization: Token token=$TOKEN" \
+  --data "{
+      \"board\" : {
+          \"name\" : \"$NAME\"
+        }
+  }"
+```
+
+```sh
+scripts/board-update.sh
+```
+
+#### GET /boards
+
+Request:
+
+```sh
+curl --include --request GET http://localhost:3000/boards/ \
+  --header "Authorization: Token token=$TOKEN"
+  ```
+
+```sh
+scripts/boards-get.sh
+```
+
+
+#### GET /boards/id
+
+Request:
+
+```sh
+curl --include --request GET http://localhost:3000/boards/$ID \
+  --header "Authorization: Token token=$TOKEN"
+  ```
+
+```sh
+scripts/board-get.sh
+```
+
+#### DELETE /boards/id
+
+
+```sh
+curl --include --request DELETE http://localhost:3000/boards/$ID \
+  --header "Authorization: Token token=$TOKEN"
+```
+
+
+```sh
+scripts/board-delete.sh
+```
+
+#### POST /cheese_additions
+
+Request:
+
+```sh
+
+curl --include --request POST http://localhost:3000/cheese_additions \
+  --header "Authorization: Token token=$TOKEN" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "cheese_addition": {
+      "board_id": "0",
+      "cheese_id": "0"
+    }
+  }'
+```
+
+```sh
+scripts/cheese_additions-create.sh
+```
+
+Response:
+
+```md
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+#### DElETE /cheese_additions/:id
+
+Request:
+
+```sh
+curl --include --request DELETE http://localhost:3000/cheese_additions/$ID \
+  --header "Authorization: Token token=$TOKEN"
+```
+
+
+
 
 ## [License](LICENSE)
 
