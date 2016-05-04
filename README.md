@@ -3,6 +3,8 @@
 
 ## Structure
 
+Front end repository: https://github.com/natdjerf/js-cheese
+
 All actions are implemented by the user. In order to add a cheese to a board, a POST request is made to the cheese addition table with the associated board and selected cheese id parameters.
 
 Models:
