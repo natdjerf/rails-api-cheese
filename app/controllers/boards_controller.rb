@@ -1,7 +1,7 @@
 # Protected Controller to index only current user's boards
 class BoardsController < ProtectedController
-  before_action :set_board, only: [:show, :update, :destroy]
-
+  before_action :set_cheeses, only: [:show, :update]
+  before_action :set_board, only: [:destroy]
   # GET /boards
   # GET /boards.json
   def index
@@ -51,8 +51,12 @@ class BoardsController < ProtectedController
 
   private
 
-  def set_board
+  def set_cheeses
     @board = Board.find(params[:id]).cheeses
+  end
+
+  def set_board
+    @board = Board.find(params[:id])
   end
 
   def board_params
